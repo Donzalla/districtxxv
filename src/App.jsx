@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { CartProvider } from './context/CartContext';
 import Navbar from './components/Navbar';
 import CartDrawer from './components/CartDrawer';
+import Footer from './components/Footer';
 import Hero from './components/Hero';
 import Collections from './components/Collections';
 import ProductDetail from './components/ProductDetail';
@@ -12,16 +13,17 @@ function App() {
   return (
     <Router>
       <CartProvider>
-        <div style={{ minHeight: '100vh', background: '#000' }}>
+        <div style={{ minHeight: '100vh', background: '#000', display: 'flex', flexDirection: 'column' }}>
           <Navbar />
           <CartDrawer />
-          <main>
+          <main style={{ flex: 1 }}>
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/collections" element={<Collections />} />
               <Route path="/product/:id" element={<ProductDetail />} />
             </Routes>
           </main>
+          <Footer />
         </div>
       </CartProvider>
     </Router>
