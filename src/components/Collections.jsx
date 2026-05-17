@@ -39,8 +39,7 @@ const ProductCard = ({ product }) => {
       style={{
         background: hovered ? 'rgba(255,255,255,0.03)' : 'rgba(255,255,255,0.015)',
         border: `1px solid ${hovered ? A.border : 'rgba(255,255,255,0.07)'}`,
-        borderRadius: '4px', overflow: 'hidden',
-        transition: 'all 0.3s',
+        borderRadius: '4px', overflow: 'hidden', transition: 'all 0.3s',
         transform: hovered ? 'translateY(-4px)' : 'translateY(0)',
         boxShadow: hovered ? `0 12px 40px rgba(0,0,0,0.6), 0 0 20px ${A.glow}` : '0 4px 16px rgba(0,0,0,0.4)',
         display: 'flex', flexDirection: 'column', cursor: 'pointer',
@@ -122,15 +121,12 @@ const Collections = () => {
   const [sortBy, setSortBy]             = useState('newest');
   const [sortOpen, setSortOpen]         = useState(false);
 
-  // Read category from URL — e.g. /collections?category=Kicks
   const activeCategory = searchParams.get('category') || 'All';
+  const searchQuery    = searchParams.get('search') || '';
 
   const setActiveCategory = (cat) => {
-    if (cat === 'All') {
-      setSearchParams({});
-    } else {
-      setSearchParams({ category: cat });
-    }
+    if (cat === 'All') setSearchParams({});
+    else setSearchParams({ category: cat });
   };
 
   useEffect(() => {
@@ -157,15 +153,35 @@ const Collections = () => {
   }, [products]);
 
   const filtered = useMemo(() => {
-    let list = activeCategory === 'All'
-      ? products
-      : products.filter(p => p.category === activeCategory);
+    let list = products;
+
+    // Search filter — matches name or category
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      list = list.filter(p =>
+        p.name?.toLowerCase().includes(q) ||
+        p.category?.toLowerCase().includes(q)
+      );
+    }
+
+    // Category filter
+    if (!searchQuery && activeCategory !== 'All') {
+      list = list.filter(p => p.category === activeCategory);
+    }
+
+    // Sort
     if (sortBy === 'price_asc')  list = [...list].sort((a, b) => a.price - b.price);
     if (sortBy === 'price_desc') list = [...list].sort((a, b) => b.price - a.price);
+
     return list;
-  }, [products, activeCategory, sortBy]);
+  }, [products, activeCategory, searchQuery, sortBy]);
 
   const activeLabel = SORT_OPTIONS.find(o => o.value === sortBy)?.label;
+
+  // Page title
+  const pageTitle = searchQuery
+    ? `Results for "${searchQuery}"`
+    : activeCategory === 'All' ? 'Collections' : activeCategory;
 
   return (
     <div style={{ minHeight: '100vh', background: '#000', color: '#fff' }}>
@@ -195,24 +211,42 @@ const Collections = () => {
 
       {/* Header */}
       <div style={{ borderBottom: '1px solid rgba(255,255,255,0.07)', padding: '48px 40px 32px', maxWidth: '1280px', margin: '0 auto' }}>
-        <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '10px', fontWeight: 300, letterSpacing: '0.28em', textTransform: 'uppercase', color: A.tagText, marginBottom: '10px' }}>SS 2025</div>
-        <h1 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 'clamp(42px, 5vw, 72px)', lineHeight: 0.9, color: '#fff', letterSpacing: '0.02em', margin: 0 }}>
-          {activeCategory === 'All' ? 'Collections' : activeCategory}
+        <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: '10px', fontWeight: 300, letterSpacing: '0.28em', textTransform: 'uppercase', color: A.tagText, marginBottom: '10px' }}>
+          {searchQuery ? 'Search Results' : 'SS 2025'}
+        </div>
+        <h1 style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 'clamp(36px, 5vw, 72px)', lineHeight: 0.9, color: '#fff', letterSpacing: '0.02em', margin: 0 }}>
+          {pageTitle}
         </h1>
       </div>
 
-      {/* Filters */}
+      {/* Filters — hide category filters when searching */}
       <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '24px 40px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-          {categories.map(cat => (
-            <button key={cat}
-              className={`c-cat-btn${activeCategory === cat ? ' active' : ''}`}
-              onClick={() => setActiveCategory(cat)}
-            >{cat}</button>
-          ))}
-        </div>
+        {!searchQuery && (
+          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+            {categories.map(cat => (
+              <button key={cat}
+                className={`c-cat-btn${activeCategory === cat ? ' active' : ''}`}
+                onClick={() => setActiveCategory(cat)}
+              >{cat}</button>
+            ))}
+          </div>
+        )}
 
-        <div style={{ position: 'relative' }}>
+        {/* Clear search button */}
+        {searchQuery && (
+          <button onClick={() => setSearchParams({})} style={{
+            background: 'none', border: '1px solid rgba(255,255,255,0.1)',
+            color: 'rgba(255,255,255,0.45)', cursor: 'pointer',
+            fontFamily: "'DM Sans', sans-serif", fontSize: '11px',
+            letterSpacing: '0.18em', textTransform: 'uppercase',
+            padding: '7px 18px', transition: 'all 0.25s', display: 'flex', alignItems: 'center', gap: '8px',
+          }}>
+            ✕ Clear Search
+          </button>
+        )}
+
+        {/* Sort */}
+        <div style={{ position: 'relative', marginLeft: 'auto' }}>
           <button onClick={() => setSortOpen(v => !v)} style={{
             background: 'none', cursor: 'pointer',
             border: `1px solid ${sortOpen ? A.border : 'rgba(255,255,255,0.1)'}`,
@@ -244,6 +278,7 @@ const Collections = () => {
       {!loading && !error && (
         <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '18px 40px 0', fontFamily: "'DM Sans', sans-serif", fontSize: '11px', fontWeight: 300, letterSpacing: '0.14em', color: 'rgba(255,255,255,0.25)', textTransform: 'uppercase' }}>
           {filtered.length} {filtered.length === 1 ? 'item' : 'items'}
+          {searchQuery && ` for "${searchQuery}"`}
         </div>
       )}
 
@@ -252,7 +287,7 @@ const Collections = () => {
         {loading && [...Array(6)].map((_, i) => <SkeletonCard key={i} />)}
 
         {error && (
-          <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '80px 0', fontFamily: "'DM Sans', sans-serif", fontWeight: 300, color: A.tagText, fontSize: '14px', letterSpacing: '0.1em' }}>{error}</div>
+          <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '80px 0', fontFamily: "'DM Sans', sans-serif", fontWeight: 300, color: A.tagText, fontSize: '14px' }}>{error}</div>
         )}
 
         {!loading && !error && filtered.map((product, i) => (
@@ -263,7 +298,7 @@ const Collections = () => {
 
         {!loading && !error && filtered.length === 0 && (
           <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '80px 0', fontFamily: "'DM Sans', sans-serif", fontWeight: 300, color: 'rgba(255,255,255,0.2)', fontSize: '14px', letterSpacing: '0.1em' }}>
-            No products in this category yet.
+            {searchQuery ? `No products found for "${searchQuery}".` : 'No products in this category yet.'}
           </div>
         )}
       </div>
