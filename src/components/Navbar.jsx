@@ -16,7 +16,7 @@ const A = {
 const CATEGORY_LINKS = [
   { label: 'Dropped',     category: 'Dropped' },
   { label: 'Kicks',       category: 'Kicks' },
-  { label: 'Apparel',     category: 'Apparel' },
+  { label: 'Apparel',     category: 'All' },
   { label: 'Accessories', category: 'Accessories' },
   { label: 'Gift Card',   category: 'Gift Card' },
   { label: 'News',        category: 'News' },

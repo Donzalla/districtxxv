@@ -45,7 +45,7 @@ const ProductCard = ({ product }) => {
         display: 'flex', flexDirection: 'column', cursor: 'pointer',
       }}
     >
-      <div style={{ position: 'relative', aspectRatio: '3/4', background: 'rgba(255,255,255,0.04)', overflow: 'hidden' }}>
+      <div style={{ position: 'relative', aspectRatio: '1/1', background: 'rgba(255,255,255,0.04)', overflow: 'hidden' }}>
         {product.image_url ? (
           <img src={product.image_url} alt={product.name}
             style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
@@ -103,7 +103,7 @@ const ProductCard = ({ product }) => {
 // ─── SKELETON ────────────────────────────────────────────────────────────────
 const SkeletonCard = () => (
   <div style={{ border: '1px solid rgba(255,255,255,0.07)', borderRadius: '4px', overflow: 'hidden' }}>
-    <div style={{ aspectRatio: '3/4', background: 'linear-gradient(90deg,rgba(255,255,255,0.04) 25%,rgba(255,255,255,0.08) 50%,rgba(255,255,255,0.04) 75%)', backgroundSize: '200% 100%', animation: 'c-shimmer 1.4s infinite' }} />
+    <div style={{ aspectRatio: '1/1', background: 'linear-gradient(90deg,rgba(255,255,255,0.04) 25%,rgba(255,255,255,0.08) 50%,rgba(255,255,255,0.04) 75%)', backgroundSize: '200% 100%', animation: 'c-shimmer 1.4s infinite' }} />
     <div style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
       <div style={{ height: '13px', background: 'rgba(255,255,255,0.06)', borderRadius: '2px', width: '70%' }} />
       <div style={{ height: '13px', background: 'rgba(255,255,255,0.04)', borderRadius: '2px', width: '40%' }} />
@@ -283,7 +283,7 @@ const Collections = () => {
       )}
 
       {/* Grid */}
-      <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '28px 40px 80px', display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px' }}>
+      <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '28px 40px 80px', display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '20px' }}>
         {loading && [...Array(6)].map((_, i) => <SkeletonCard key={i} />)}
 
         {error && (
