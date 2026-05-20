@@ -10,6 +10,8 @@ import ProductDetail from './components/ProductDetail';
 import Login from './components/Login';
 import Signup from './components/Signup';
 import Profile from './components/Profile';
+import Checkout from './components/Checkout';
+import OrderConfirmation from './components/OrderConfirmation';
 
 function App() {
   return (
@@ -21,12 +23,14 @@ function App() {
             <CartDrawer />
             <main style={{ flex: 1 }}>
               <Routes>
-                <Route path="/"            element={<Hero />} />
-                <Route path="/collections" element={<Collections />} />
-                <Route path="/product/:id" element={<ProductDetail />} />
-                <Route path="/login"       element={<Login />} />
-                <Route path="/signup"      element={<Signup />} />
-                <Route path="/profile"     element={<Profile />} />
+                <Route path="/"                          element={<Hero />} />
+                <Route path="/collections"               element={<Collections />} />
+                <Route path="/product/:id"               element={<ProductDetail />} />
+                <Route path="/login"                     element={<Login />} />
+                <Route path="/signup"                    element={<Signup />} />
+                <Route path="/profile"                   element={<Profile />} />
+                <Route path="/checkout"                  element={<Checkout />} />
+                <Route path="/order-confirmation/:id"    element={<OrderConfirmation />} />
               </Routes>
             </main>
             <Footer />
